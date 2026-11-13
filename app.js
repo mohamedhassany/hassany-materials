@@ -12,6 +12,16 @@ const entranceObserver = new IntersectionObserver((entries, observer) => {
 
 animatedSections.forEach((section) => entranceObserver.observe(section));
 
+document.querySelectorAll('.tech-hero, .material-card, .design-scene').forEach((element) => {
+  element.addEventListener('click', (event) => {
+    if (event.target.closest('a')) return;
+    element.classList.remove('is-interacting');
+    void element.offsetWidth;
+    element.classList.add('is-interacting');
+    setTimeout(() => element.classList.remove('is-interacting'), 1700);
+  });
+});
+
 function updateScene() {
   const scroll = window.scrollY;
   const height = Math.max(document.body.scrollHeight - innerHeight, 1);
