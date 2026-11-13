@@ -1,5 +1,16 @@
 const root = document.documentElement;
 const cards = [...document.querySelectorAll('.material-card')];
+const animatedSections = [...cards, document.querySelector('.design-scene')].filter(Boolean);
+
+const entranceObserver = new IntersectionObserver((entries, observer) => {
+  entries.forEach((entry) => {
+    if (!entry.isIntersecting) return;
+    entry.target.classList.add('is-active');
+    observer.unobserve(entry.target);
+  });
+}, { threshold: 0.3 });
+
+animatedSections.forEach((section) => entranceObserver.observe(section));
 
 function updateScene() {
   const scroll = window.scrollY;
