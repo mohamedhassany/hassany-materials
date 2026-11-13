@@ -1,0 +1,20 @@
+/* Motion is reserved for direct user interaction and scrolling only. */
+.cube,
+.cube-inner,
+.orbit-a,
+.orbit-b,
+.orbit-c,
+.sat-one,
+.sat-two,
+.sat-three,
+.scroll-line i::after,
+.browser,
+.vibe-ring,
+.book,
+.portrait-orbit,
+.portrait-orbit strong,
+.planet,
+.r-one,
+.r-two {
+  animation: none !important;
+}

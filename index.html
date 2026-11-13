@@ -10,6 +10,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=DM+Mono&family=Manrope:wght@400;500;600;700;800&family=Playfair+Display:ital,wght@0,600;0,700;1,600&family=Readex+Pro:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="style.css" />
+  <link rel="stylesheet" href="overrides.css" />
 </head>
 <body>
   <div class="grain" aria-hidden="true"></div>
@@ -18,7 +19,7 @@
 
   <nav class="nav wrap">
     <a class="brand" href="#top"><span>H</span> HassAny <i>Materials</i></a>
-    <div class="nav-links"><a href="#materials">المسارات</a><a href="#about">الفكرة</a><a class="nav-portfolio" href="https://my-portfolio-gamma-two-39.vercel.app/" target="_blank" rel="noreferrer">Portfolio <b>↗</b></a></div>
+    <div class="nav-links"><a href="#materials">المسارات</a><a class="nav-portfolio" href="https://my-portfolio-gamma-two-39.vercel.app/" target="_blank" rel="noreferrer">Portfolio <b>↗</b></a></div>
   </nav>
 
   <main id="top">
@@ -27,7 +28,7 @@
         <p class="eyebrow"><span></span> Built for curious minds · 2026</p>
         <h1>كل حاجة تتعلّمها<br />في <em>مدار</em> واحد.</h1>
         <p class="hero-description">مساحات تعليمية من محمد حساني، متصممة عشان تفتح لك طريق واضح من أول خطوة لحد ما تبني بإيدك.</p>
-        <div class="hero-actions"><a class="primary-btn" href="#materials">اكتشف المسارات <span>↓</span></a><a class="text-btn" href="#about">إيه الحكاية؟ <span>←</span></a></div>
+        <div class="hero-actions"><a class="primary-btn" href="#materials">اكتشف المسارات <span>↓</span></a></div>
       </div>
       <div class="hero-art" aria-label="مجسم ثلاثي الأبعاد متحرك">
         <div class="art-note note-one">01 / EXPLORE</div><div class="art-note note-two">SCROLL TO ENTER</div>
@@ -38,10 +39,8 @@
       <div class="scroll-line"><span>انزل وشوف</span><i></i></div>
     </section>
 
-    <section class="statement wrap" id="about"><p class="section-kicker">// A LEARNING UNIVERSE</p><h2>مش مجرد لينكات.<br /><em>دي أماكن</em> معمولة عشان تكمل فيها.</h2><p>كل ماتريل هنا ليها شخصية ومسار مختلف، لكن كلها بتبدأ من نفس الفكرة: الشرح الواضح والتجربة العملية أهم من الحفظ.</p></section>
-
     <section class="materials" id="materials">
-      <div class="materials-intro wrap"><p class="section-kicker">// CHOOSE YOUR ORBIT</p><h2>اختار اتجاهك.</h2><p>كل بوابة هتنقلك لتجربة مستقلة، متظبطة للمستوى والهدف بتاعها.</p></div>
+      <div class="materials-intro wrap"><h2>اختار اتجاهك.</h2><p>كل بوابة هتنقلك لتجربة مستقلة، متظبطة للمستوى والهدف بتاعها.</p></div>
       <div class="card-stack wrap">
         <article class="material-card web-card" data-index="01"><div class="card-grid"></div><div class="card-content"><p class="card-number">01 / DIGITAL CRAFT</p><h3>Web<br /><em>Materials</em></h3><p>ابدأ رحلتك في الويب خطوة بخطوة: HTML وCSS وJavaScript وReact، بشرح عربي وتركيز على إنك تفهم وتطبّق.</p><a href="https://frontend-step.vercel.app/" target="_blank" rel="noreferrer">ادخل الماتريل <span>↗</span></a></div><div class="card-object web-object"><div class="browser"><div class="browser-top"><b></b><b></b><b></b></div><div class="browser-code"><i></i><i></i><i></i><i></i><i></i></div></div></div><div class="card-tag">BUILD / CREATE / SHIP</div></article>
         <article class="material-card vibe-card" data-index="02"><div class="card-grid"></div><div class="card-content"><p class="card-number">02 / AI WORKFLOW</p><h3>Vibe<br /><em>Coding</em></h3><p>ورشة عملية لفهم طريقة التفكير والكتابة والبناء مع أدوات الذكاء الاصطناعي؛ من الفكرة لحد نسخة تقدر تجربها.</p><a href="https://vibe-lab-workshop.vercel.app/" target="_blank" rel="noreferrer">ادخل الورشة <span>↗</span></a></div><div class="card-object vibe-object"><div class="vibe-ring"><b></b><b></b><b></b></div><div class="vibe-core">AI</div></div><div class="card-tag">PROMPT / PROTOTYPE / PLAY</div></article>
@@ -50,7 +49,7 @@
       </div>
     </section>
 
-    <section class="manifesto wrap"><div class="manifesto-copy"><p class="section-kicker">// KEEP MOVING</p><h2>التعلّم مش خط مستقيم.<br />هو حركة، تجربة، <em>وتكرار.</em></h2><p>اختار نقطة البداية المناسبة ليك، وسيب فضولك ياخدك للباقي. كل مساحة هنا معمولة عشان تخليك تتحرك للأمام، مش بس تجمع معلومات.</p><a class="primary-btn light-btn" href="https://wa.me/201022841585" target="_blank" rel="noreferrer">كلّمني على واتساب <span>↗</span></a></div><div class="planet-scene" aria-hidden="true"><div class="planet"><span class="planet-mark">H</span></div><div class="planet-ring r-one"></div><div class="planet-ring r-two"></div><div class="planet-star s1"></div><div class="planet-star s2"></div><div class="planet-star s3"></div></div></section>
+    <section class="manifesto wrap"><div class="manifesto-copy"><h2>التعلّم مش خط مستقيم.<br />هو حركة، تجربة، <em>وتكرار.</em></h2><p>اختار نقطة البداية المناسبة ليك، وسيب فضولك ياخدك للباقي. كل مساحة هنا معمولة عشان تخليك تتحرك للأمام، مش بس تجمع معلومات.</p><a class="primary-btn light-btn" href="https://wa.me/201022841585" target="_blank" rel="noreferrer">كلّمني على واتساب <span>↗</span></a></div><div class="planet-scene" aria-hidden="true"><div class="planet"><span class="planet-mark">H</span></div><div class="planet-ring r-one"></div><div class="planet-ring r-two"></div><div class="planet-star s1"></div><div class="planet-star s2"></div><div class="planet-star s3"></div></div></section>
   </main>
 
   <footer><div class="footer-top wrap"><a class="footer-brand" href="#top">HassAny<br /><em>Materials</em></a><div><p>جاهز تبدأ؟</p><a href="https://wa.me/201022841585" target="_blank" rel="noreferrer">خلّينا نتكلم <span>↗</span></a></div></div><div class="footer-bottom wrap"><span>© 2026 Mohamed Hassany</span><div><a href="https://www.instagram.com/mo7amed_hassany" target="_blank" rel="noreferrer">Instagram</a><a href="https://github.com/mohamedhassany" target="_blank" rel="noreferrer">GitHub</a><a href="https://my-portfolio-gamma-two-39.vercel.app/" target="_blank" rel="noreferrer">Portfolio</a></div></div></footer>
