@@ -1,5 +1,4 @@
 const artwork = [...document.querySelectorAll('.art')];
-const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const hoverPointer = matchMedia('(hover: hover) and (pointer: fine)');
 const visibleArtwork = new Set(artwork);
 const root = document.documentElement;
@@ -8,11 +7,6 @@ const hero = document.querySelector('.hero');
 const heroStage = document.querySelector('.hero-stage');
 const heroArt = document.querySelector('.hero-art');
 const stages = [...document.querySelectorAll('.track-stage')];
-
-function applyMotionPreference() {
-  root.classList.toggle('motion-on', !reducedMotion.matches);
-  scheduleScrollArt();
-}
 
 artwork.forEach((button) => {
   button.addEventListener('pointerenter', (event) => {
@@ -64,23 +58,21 @@ function updateHero() {
 
 function updateScrollArt() {
   scheduled = false;
-  const gentle = reducedMotion.matches;
   const distance = Math.max(1, root.scrollHeight - innerHeight);
   root.style.setProperty('--page-progress', clamp(scrollY / distance, 0, 1));
-  if (!gentle && visibleArtwork.has(heroArt)) updateHero();
+  if (visibleArtwork.has(heroArt)) updateHero();
 
   for (const stage of stages) {
     const bounds = stage.getBoundingClientRect();
     const progress = clamp((innerHeight - bounds.top) / (innerHeight * .58), 0, 1);
     const remaining = (1 - progress) ** 1.6;
     const side = stage.matches('#web, #school') ? 1 : -1;
-    stage.style.setProperty('--entry-z', `${remaining * (gentle ? -28 : -490)}px`);
-    stage.style.setProperty('--entry-y', `${remaining * (gentle ? 8 : 85)}px`);
-    stage.style.setProperty('--entry-pitch', `${remaining * (gentle ? 0 : 48)}deg`);
-    stage.style.setProperty('--entry-yaw', `${remaining * side * (gentle ? 0 : 34)}deg`);
-    stage.style.setProperty('--entry-roll', `${remaining * side * (gentle ? 0 : -7)}deg`);
+    stage.style.setProperty('--entry-z', `${remaining * -490}px`);
+    stage.style.setProperty('--entry-y', `${remaining * 85}px`);
+    stage.style.setProperty('--entry-pitch', `${remaining * 48}deg`);
+    stage.style.setProperty('--entry-yaw', `${remaining * side * 34}deg`);
+    stage.style.setProperty('--entry-roll', `${remaining * side * -7}deg`);
   }
-  if (gentle) return;
 
   for (const button of visibleArtwork) {
     const panel = button.closest('.track');
@@ -126,9 +118,5 @@ if ('IntersectionObserver' in window) {
 
 addEventListener('scroll', scheduleScrollArt, { passive: true });
 addEventListener('resize', scheduleScrollArt);
-if (reducedMotion.addEventListener) {
-  reducedMotion.addEventListener('change', applyMotionPreference);
-} else {
-  reducedMotion.addListener(applyMotionPreference);
-}
-applyMotionPreference();
+root.classList.add('motion-on');
+updateScrollArt();

@@ -141,8 +141,5 @@ footer { background:#300d0c; color:var(--paper); padding-block:3rem; }
   .hero-art { min-height:270px; }
 }
 @media(prefers-reduced-motion:reduce) {
-  html:not(.motion-on) { scroll-behavior:auto; }
-  html:not(.motion-on) *,html:not(.motion-on) *::before,html:not(.motion-on) *::after { animation:none !important; transition:none !important; }
-  html:not(.motion-on) .scene { transform:none; }
-  html:not(.motion-on) .book-model { transform:translateX(14%); }
+  html { scroll-behavior:auto; }
 }

@@ -87,4 +87,6 @@ body { overflow-x:clip; }
 }
 @media (prefers-reduced-motion:reduce) {
   .button,.ribbon a,.art-action { transform:none; }
+  .hero-art .hero-console,.track-art .frame,.track-art .book-model,.pixel-field i { animation-duration:14s; }
+  .scroll-cue i::after { animation:none; }
 }
