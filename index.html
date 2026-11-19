@@ -10,10 +10,12 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@500;700;800&family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="materials.css">
+  <link rel="stylesheet" href="showreel.css">
   <script src="materials.js" defer></script>
 </head>
 <body id="top">
   <a class="skip" href="#materials">روح للماتريل</a>
+  <div class="scroll-meter" aria-hidden="true"></div>
   <header class="site-header">
     <nav class="wrap nav" aria-label="القائمة الرئيسية">
       <a href="#top" class="brand" dir="ltr"><span>H.</span> HassAny Materials</a>
@@ -22,15 +24,20 @@
   </header>
   <main>
     <section class="hero">
-      <div class="wrap hero-grid">
+      <div class="hero-stage">
+        <div class="stage-grid" aria-hidden="true"></div>
+        <div class="wrap hero-grid">
         <div class="hero-copy">
           <p class="overline">ماتريل محمد حساني</p>
           <h1>اتعلّم بطريقتك.<br><em>وابدأ من هنا.</em></h1>
           <p class="intro">من أول سطر كود لحد مراجعة البكالوريا. كل الماتريل في مكان واحد، اختار اللي محتاجه وابدأ.</p>
           <a class="button primary" href="#materials">استكشف الماتريل</a>
+          <p class="scroll-cue" aria-hidden="true"><i></i> انزل عشان تحرّك المشهد</p>
         </div>
         <button type="button" class="art hero-art" aria-label="تشغيل معاينة شاشة الكود" aria-pressed="false">
           <span class="scene" aria-hidden="true">
+            <span class="floating-ui ui-files" dir="ltr"><b>EXPLORER</b><span>⌑ index.html</span><span>⌑ styles.css</span></span>
+            <span class="floating-ui ui-preview" dir="ltr"><b>LIVE PREVIEW</b><span class="ui-layout"><i></i><i></i><i></i></span></span>
             <span class="hero-console" dir="ltr">
               <span class="console-bar"><i></i><i></i><i></i><span>hassany / start</span></span>
               <span class="console-body"><span class="console-side">01<br>02<br>03<br>04</span><span class="console-code"><b>const</b> next = <em>'learn'</em>;<br><b>build</b>(next);<br><span class="console-result">✓ Ready to learn</span></span></span>
@@ -40,6 +47,7 @@
           </span>
           <span class="art-action" dir="ltr">Run code <i>+</i></span>
         </button>
+        </div>
       </div>
     </section>
     <section class="catalog wrap" id="materials" aria-labelledby="catalog-heading">
@@ -95,5 +103,6 @@
       <div class="footer-contact"><h2>عندك سؤال عن الماتريل؟</h2><div class="footer-links"><a href="https://wa.me/201022841585" target="_blank" rel="noopener noreferrer">كلّمني على واتساب</a><a href="https://github.com/mohamedhassany" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.instagram.com/mo7amed_hassany" target="_blank" rel="noopener noreferrer">Instagram</a></div></div>
     </div>
   </footer>
+  <button class="motion-toggle" type="button" hidden aria-pressed="false">إيقاف الحركة</button>
 </body>
 </html>
