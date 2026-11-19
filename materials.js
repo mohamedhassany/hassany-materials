@@ -10,11 +10,18 @@ const stages = [...document.querySelectorAll('.track-stage')];
 const runway = document.querySelector('.catalog-runway');
 const deck = document.querySelector('.catalog-deck');
 const ribbon = document.querySelector('.ribbon');
+const ribbonLinks = [...ribbon.querySelectorAll('a')];
 const typedHeading = document.querySelector('.typed-heading');
 const headingLetters = Array.from(typedHeading.parentElement.getAttribute('aria-label'));
-const typingEnd = .25;
-const cardInterval = .17;
-const cardDuration = .23;
+const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
+const typingEnd = .21;
+const firstCard = .13;
+const cardInterval = .157;
+const cardDuration = .31;
+let deckTarget = 0;
+let deckPosition = null;
+let deckFrame = 0;
+let deckTime = 0;
 
 artwork.forEach((button) => {
   button.addEventListener('pointerenter', (event) => {
@@ -74,32 +81,25 @@ function updateScrollArt() {
   const runwayBounds = runway.getBoundingClientRect();
   const range = Math.max(1, runwayBounds.height - deck.offsetHeight);
   const stickyTop = sticky ? parseFloat(getComputedStyle(deck).top) : 0;
-  const deckProgress = clamp((stickyTop - runwayBounds.top) / range, 0, 1);
+  const prelude = innerHeight * .13;
   if (sticky) {
-    const typingProgress = clamp(deckProgress / typingEnd, 0, 1);
-    const letterCount = Math.floor(typingProgress * headingLetters.length);
-    const text = headingLetters.slice(0, letterCount).join('');
-    if (typedHeading.textContent !== text) typedHeading.textContent = text;
-    const depth = (1 - typingProgress) ** 1.3;
-    typedHeading.style.setProperty('--text-z', `${depth * -180}px`);
-    typedHeading.style.setProperty('--text-pitch', `${depth * 33}deg`);
-    typedHeading.style.setProperty('--text-yaw', `${depth * -24}deg`);
-    deck.classList.toggle('is-typing', deckProgress < typingEnd);
-  }
-
-  for (const [index, stage] of stages.entries()) {
-    const bounds = stage.getBoundingClientRect();
-    const progress = sticky
-      ? clamp((deckProgress - typingEnd - index * cardInterval) / cardDuration, 0, 1)
-      : clamp((innerHeight - bounds.top) / (innerHeight * .58), 0, 1);
-    const remaining = (1 - progress) ** 1.6;
-    const side = stage.matches('#web, #school') ? 1 : -1;
-    stage.style.setProperty('--entry-visibility', sticky ? progress : 1);
-    stage.style.setProperty('--entry-z', `${remaining * -490}px`);
-    stage.style.setProperty('--entry-y', `${remaining * 85}px`);
-    stage.style.setProperty('--entry-pitch', `${remaining * 48}deg`);
-    stage.style.setProperty('--entry-yaw', `${remaining * side * 34}deg`);
-    stage.style.setProperty('--entry-roll', `${remaining * side * -7}deg`);
+    deckTarget = clamp((stickyTop + prelude - runwayBounds.top) / (range + prelude), 0, 1);
+    if (deckPosition === null || reduceMotion.matches) {
+      deckPosition = deckTarget;
+      paintDeck(deckPosition);
+    } else if (!deckFrame && deckPosition !== deckTarget) {
+      deckTime = performance.now();
+      deckFrame = requestAnimationFrame(advanceDeck);
+    }
+  } else {
+    cancelAnimationFrame(deckFrame);
+    deckFrame = 0;
+    deckPosition = null;
+    for (const stage of stages) {
+      const bounds = stage.getBoundingClientRect();
+      const progress = clamp((innerHeight - bounds.top) / (innerHeight * .55), 0, 1);
+      paintCard(stage, progress, false);
+    }
   }
 
   for (const button of visibleArtwork) {
@@ -126,14 +126,60 @@ function updateScrollArt() {
   }
 }
 
+function paintCard(stage, progress, pinned) {
+  const remaining = (1 - progress) ** 2;
+  const side = stage.matches('#web, #school') ? 1 : -1;
+  stage.style.setProperty('--entry-visibility', pinned ? clamp(progress * 3.7, 0, 1) : 1);
+  stage.style.setProperty('--entry-z', `${remaining * -300}px`);
+  stage.style.setProperty('--entry-x', `${remaining * side * -32}px`);
+  stage.style.setProperty('--entry-y', `${remaining * 42}px`);
+  stage.style.setProperty('--entry-pitch', `${remaining * 31}deg`);
+  stage.style.setProperty('--entry-yaw', `${remaining * side * 25}deg`);
+  stage.style.setProperty('--entry-roll', `${remaining * side * -4}deg`);
+  stage.style.setProperty('--entry-shine', Math.sin(progress * Math.PI) * .5);
+  stage.classList.toggle('is-unrevealed', pinned && progress < .06);
+}
+
+function paintDeck(position) {
+  const typing = clamp(position / typingEnd, 0, 1);
+  const text = headingLetters.slice(0, Math.ceil(typing * headingLetters.length)).join('');
+  if (typedHeading.textContent !== text) typedHeading.textContent = text;
+  const depth = (1 - typing) ** 1.5;
+  typedHeading.style.setProperty('--text-z', `${depth * -120}px`);
+  typedHeading.style.setProperty('--text-pitch', `${depth * 23}deg`);
+  typedHeading.style.setProperty('--text-yaw', `${depth * -13}deg`);
+  deck.style.setProperty('--deck-progress', position);
+  deck.classList.toggle('is-typing', typing < 1);
+  const active = position < firstCard ? -1 : Math.min(stages.length - 1, Math.floor((position - firstCard) / cardInterval));
+  for (const [index, stage] of stages.entries()) {
+    const progress = clamp((position - firstCard - index * cardInterval) / cardDuration, 0, 1);
+    paintCard(stage, progress, true);
+    ribbonLinks[index].classList.toggle('is-current', index === active);
+  }
+}
+
+function advanceDeck(time) {
+  deckFrame = 0;
+  const remaining = deckTarget - deckPosition;
+  if (Math.abs(remaining) < .002) {
+    deckPosition = deckTarget;
+  } else {
+    deckPosition += remaining * (1 - Math.exp(-Math.min(time - deckTime, 80) / 52));
+    deckTime = time;
+    deckFrame = requestAnimationFrame(advanceDeck);
+  }
+  paintDeck(deckPosition);
+}
+
 function scrollToDeckCard() {
   const index = stages.findIndex((stage) => '#' + stage.id === location.hash);
   if (index < 0 || getComputedStyle(deck).position !== 'sticky') return;
   const bounds = runway.getBoundingClientRect();
   const range = bounds.height - deck.offsetHeight;
-  const progress = typingEnd + index * cardInterval + cardDuration;
-  const top = scrollY + bounds.top + Math.ceil(progress * range) - parseFloat(getComputedStyle(deck).top);
-  scrollTo({ top, behavior: 'instant' });
+  const progress = firstCard + index * cardInterval + cardDuration;
+  const prelude = innerHeight * .13;
+  const top = scrollY + bounds.top + Math.ceil(progress * (range + prelude)) - prelude - parseFloat(getComputedStyle(deck).top);
+  scrollTo({ top, behavior: reduceMotion.matches ? 'instant' : 'smooth' });
 }
 
 function scheduleScrollArt() {
@@ -162,5 +208,9 @@ addEventListener('hashchange', scrollToDeckCard);
 addEventListener('load', scrollToDeckCard);
 ribbon.addEventListener('click', (event) => {
   const link = event.target.closest('a');
-  if (link?.hash === location.hash) requestAnimationFrame(scrollToDeckCard);
+  if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey ||
+      getComputedStyle(deck).position !== 'sticky') return;
+  event.preventDefault();
+  if (link.hash !== location.hash) history.pushState(null, '', link.hash);
+  scrollToDeckCard();
 });
