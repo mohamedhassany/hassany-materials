@@ -19,10 +19,11 @@ const heroLetters = [...document.querySelector('.hero-title-source').childNodes]
 const typedHeading = document.querySelector('.typed-heading');
 const headingLetters = Array.from(typedHeading.parentElement.getAttribute('aria-label'));
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
-const typingEnd = .21;
-const firstCard = .13;
+const typingEnd = .27;
+const firstCard = .19;
 const cardInterval = .157;
 const cardDuration = .31;
+const deckPrelude = .34;
 let deckTarget = 0;
 let deckPosition = null;
 let deckFrame = 0;
@@ -99,14 +100,10 @@ function updateHero() {
 
 function updateSceneFold() {
   const { top, height } = sceneFold.getBoundingClientRect();
-  const progress = clamp((innerHeight * .88 - top) / (innerHeight * .57 + height * .35), 0, 1);
-  const crease = (1 - progress) ** 1.4;
-  const visibility = clamp(progress * 8, 0, 1) * clamp((1 - progress) * 5, 0, 1);
-  sceneFold.style.setProperty('--fold-opacity', visibility);
-  sceneFold.style.setProperty('--fold-angle', `${crease * 69}deg`);
-  sceneFold.style.setProperty('--fold-lift', `${Math.sin(progress * Math.PI) * -28}px`);
-  sceneFold.style.setProperty('--fold-depth', `${crease * -180}px`);
-  sceneFold.style.setProperty('--fold-twist', `${crease * -13}deg`);
+  const progress = clamp((innerHeight * .77 - top - height) / (innerHeight * .57), 0, 1);
+  const angle = progress * progress * (3 - 2 * progress);
+  sceneFold.style.setProperty('--fold-angle', `${angle * -90}deg`);
+  sceneFold.style.setProperty('--fold-visibility', progress === 1 ? 'hidden' : 'visible');
   heroArt.style.setProperty('--fold-exit-depth', `${-progress * 145}px`);
   heroArt.style.setProperty('--fold-exit-pitch', `${progress * 24}deg`);
 }
@@ -125,7 +122,7 @@ function updateScrollArt() {
   const runwayBounds = runway.getBoundingClientRect();
   const range = Math.max(1, runwayBounds.height - deck.offsetHeight);
   const stickyTop = sticky ? parseFloat(getComputedStyle(deck).top) : 0;
-  const prelude = innerHeight * .13;
+  const prelude = innerHeight * deckPrelude;
   if (sticky) {
     deckTarget = clamp((stickyTop + prelude - runwayBounds.top) / (range + prelude), 0, 1);
     if (deckPosition === null || reduceMotion.matches) {
@@ -139,7 +136,7 @@ function updateScrollArt() {
     cancelAnimationFrame(deckFrame);
     deckFrame = 0;
     deckPosition = null;
-    paintDeckTitle(clamp((innerHeight * .92 - runwayBounds.top) / (innerHeight * .32), 0, 1));
+    paintDeckTitle(clamp((innerHeight * .48 - runwayBounds.top) / (innerHeight * .33), 0, 1));
     for (const stage of stages) {
       const bounds = stage.getBoundingClientRect();
       const progress = clamp((innerHeight - bounds.top) / (innerHeight * .55), 0, 1);
@@ -223,7 +220,7 @@ function scrollToDeckCard() {
   const bounds = runway.getBoundingClientRect();
   const range = bounds.height - deck.offsetHeight;
   const progress = firstCard + index * cardInterval + cardDuration;
-  const prelude = innerHeight * .13;
+  const prelude = innerHeight * deckPrelude;
   const top = scrollY + bounds.top + Math.ceil(progress * (range + prelude)) - prelude - parseFloat(getComputedStyle(deck).top);
   scrollTo({ top, behavior: reduceMotion.matches ? 'instant' : 'smooth' });
 }

@@ -1,6 +1,6 @@
 /* The stationary stage provides the scroll bounds and perspective for the whole card. */
 body { overflow-x:clip; }
-:root { --scene-dark:#300d0c; --blend-height:clamp(64px,10vw,138px); }
+:root { --scene-dark:#300d0c; }
 .track-stage {
   position:relative;
   margin:0 0 clamp(2rem,6vw,5rem);
@@ -52,48 +52,24 @@ body { overflow-x:clip; }
   background-size:clamp(27px,4vw,64px) clamp(27px,4vw,64px);
   mask-image:linear-gradient(110deg,#000,transparent 85%);
 }
-.hero-stage::after {
-  content:""; position:absolute; inset:auto 0 0; height:clamp(48px,10vh,105px);
-  pointer-events:none;
-  background:linear-gradient(to bottom,transparent,var(--scene-dark));
-}
 .hero-stage .hero-grid { position:relative; z-index:1; }
-.section-blend {
-  height:var(--blend-height);
-  background:linear-gradient(to bottom,var(--scene-dark),#69362d 28%,#c59d82 70%,var(--paper));
-  background:linear-gradient(to bottom in oklab,var(--scene-dark),#69362d 28%,#c59d82 70%,var(--paper));
-}
-.section-blend + .catalog { padding-block-start:clamp(1.25rem,3.8vw,3.5rem); }
 .scene-fold {
-  position:relative; display:grid; place-items:center; overflow:clip;
-  height:clamp(154px,32svh,304px); perspective:880px; perspective-origin:50% 47%;
+  position:relative; height:clamp(96px,19svh,190px); margin-top:-1px;
+  background:var(--paper); perspective:715px; perspective-origin:50% 0%;
+  pointer-events:none;
 }
+.scene-fold + .catalog { padding-block-start:.35rem; }
 .fold-plane {
-  position:absolute; display:grid; grid-template-rows:1fr 1fr;
-  width:min(84%,1120px); height:76%; transform-style:preserve-3d;
-  transform:translate3d(0,var(--fold-lift,0px),var(--fold-depth,-180px)) rotateY(var(--fold-twist,-13deg));
+  position:absolute; inset:0; background:var(--scene-dark);
+  transform-origin:50% 0%; transform-style:preserve-3d;
+  transform:rotateX(var(--fold-angle,0deg));
+  visibility:var(--fold-visibility,visible);
 }
-.fold-leaf {
-  display:block; opacity:var(--fold-opacity,0); border:1px solid #cdad8c;
-  background-size:100% 100%,32px 32px,32px 32px;
-}
-.fold-leaf-dark {
-  transform-origin:50% 100%; transform:rotateX(calc(-1 * var(--fold-angle,69deg)));
-  border-radius:14px 14px 0 0;
-  background-image:linear-gradient(150deg,#4c1b16,#6b2f26ab),
-    linear-gradient(90deg,#e8d2b550 1px,transparent 1px),linear-gradient(#e8d2b550 1px,#401915 1px);
-  box-shadow:0 -1px 0 #fff5 inset,0 12px 30px #270b0a52;
-}
-.fold-leaf-light {
-  transform-origin:50% 0%; transform:rotateX(var(--fold-angle,69deg));
-  border-radius:0 0 14px 14px;
-  background-image:linear-gradient(155deg,#f8f1e792,#e8d2b5dd),
-    linear-gradient(90deg,#ab827550 1px,transparent 1px),linear-gradient(#ab827550 1px,#f8f1e7 1px);
-  box-shadow:0 1px 0 #fff9 inset,0 18px 42px #6a392b35;
-}
-footer {
-  padding-block-start:calc(2.25rem + var(--blend-height));
-  background:linear-gradient(to bottom,var(--paper) 4px,#c59d82 calc(var(--blend-height) * .42),var(--scene-dark) var(--blend-height));
+.fold-plane::after {
+  content:""; position:absolute; inset:auto 0 0; height:12px;
+  transform-origin:50% 100%; transform:rotateX(-90deg);
+  background:#834436; border-bottom:1px solid #b58268;
+  box-shadow:0 8px 16px #33120e55;
 }
 .hero-stage .stage-grid {
   inset:42% -56% -65%;
