@@ -3,25 +3,29 @@ const reducedMotion = matchMedia('(prefers-reduced-motion: reduce)');
 const hoverPointer = matchMedia('(hover: hover) and (pointer: fine)');
 const visibleArtwork = new Set(artwork);
 const root = document.documentElement;
+const siteHeader = document.querySelector('.site-header');
 const hero = document.querySelector('.hero');
 const heroStage = document.querySelector('.hero-stage');
 const heroArt = document.querySelector('.hero-art');
 const motionToggle = document.querySelector('.motion-toggle');
-let motionPaused = false;
+let motionOverride;
+
+function motionEnabled() {
+  return motionOverride ?? !reducedMotion.matches;
+}
 
 function applyMotionPreference() {
-  const enabled = !motionPaused && !reducedMotion.matches;
+  const enabled = motionEnabled();
   root.classList.toggle('motion-on', enabled);
   root.classList.toggle('motion-paused', !enabled);
-  motionToggle.hidden = reducedMotion.matches;
-  motionToggle.setAttribute('aria-pressed', String(motionPaused));
-  motionToggle.textContent = motionPaused ? 'تشغيل الحركة' : 'إيقاف الحركة';
+  motionToggle.textContent = enabled ? 'إيقاف الحركة' : 'تشغيل الأنيميشن 3D';
+  motionToggle.hidden = false;
   scheduleScrollArt();
 }
 
 motionToggle.addEventListener('click', () => {
   const before = hero.getBoundingClientRect().bottom;
-  motionPaused = !motionPaused;
+  motionOverride = !motionEnabled();
   applyMotionPreference();
   if (before <= 0) {
     const after = hero.getBoundingClientRect().bottom;
@@ -60,7 +64,8 @@ const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 function updateHero() {
   const box = hero.getBoundingClientRect();
   const stickyDistance = box.height - heroStage.offsetHeight;
-  const progress = clamp(-box.top / (stickyDistance > 0 ? stickyDistance : box.height), 0, 1);
+  const headerHeight = siteHeader.offsetHeight;
+  const progress = clamp((headerHeight - box.top) / (headerHeight + (stickyDistance > 0 ? stickyDistance : box.height)), 0, 1);
   const arc = Math.sin(progress * Math.PI);
   hero.style.setProperty('--grid-y', `${progress * 100}px`);
   hero.style.setProperty('--copy-y', `${arc * -13}px`);
@@ -127,5 +132,9 @@ if ('IntersectionObserver' in window) {
 
 addEventListener('scroll', scheduleScrollArt, { passive: true });
 addEventListener('resize', scheduleScrollArt);
-reducedMotion.addEventListener('change', applyMotionPreference);
+if (reducedMotion.addEventListener) {
+  reducedMotion.addEventListener('change', applyMotionPreference);
+} else {
+  reducedMotion.addListener(applyMotionPreference);
+}
 applyMotionPreference();

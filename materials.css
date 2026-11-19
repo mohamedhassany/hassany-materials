@@ -144,8 +144,8 @@ footer { background:#300d0c; color:var(--paper); padding-block:3rem; }
   .track:nth-of-type(even) .track-copy,.track:nth-of-type(even) .track-art { grid-area:auto; }
 }
 @media(prefers-reduced-motion:reduce) {
-  html { scroll-behavior:auto; }
-  *,*::before,*::after { animation:none !important; transition:none !important; }
-  .scene { transform:none; }
-  .book-model { transform:translateX(14%); }
+  html:not(.motion-on) { scroll-behavior:auto; }
+  html:not(.motion-on) *,html:not(.motion-on) *::before,html:not(.motion-on) *::after { animation:none !important; transition:none !important; }
+  html:not(.motion-on) .scene { transform:none; }
+  html:not(.motion-on) .book-model { transform:translateX(14%); }
 }

@@ -119,6 +119,4 @@
   .motion-on .hero-stage { position:relative; height:auto; }
   .motion-on .hero-grid { min-height:0; }
 }
-@media (prefers-reduced-motion:reduce) {
-  .scroll-meter { display:none; }
-}
+.motion-paused .scroll-meter { display:none; }
