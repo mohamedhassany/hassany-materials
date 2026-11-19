@@ -7,31 +7,12 @@ const siteHeader = document.querySelector('.site-header');
 const hero = document.querySelector('.hero');
 const heroStage = document.querySelector('.hero-stage');
 const heroArt = document.querySelector('.hero-art');
-const motionToggle = document.querySelector('.motion-toggle');
-let motionOverride;
-
-function motionEnabled() {
-  return motionOverride ?? !reducedMotion.matches;
-}
+const stages = [...document.querySelectorAll('.track-stage')];
 
 function applyMotionPreference() {
-  const enabled = motionEnabled();
-  root.classList.toggle('motion-on', enabled);
-  root.classList.toggle('motion-paused', !enabled);
-  motionToggle.textContent = enabled ? 'إيقاف الحركة' : 'تشغيل الأنيميشن 3D';
-  motionToggle.hidden = false;
+  root.classList.toggle('motion-on', !reducedMotion.matches);
   scheduleScrollArt();
 }
-
-motionToggle.addEventListener('click', () => {
-  const before = hero.getBoundingClientRect().bottom;
-  motionOverride = !motionEnabled();
-  applyMotionPreference();
-  if (before <= 0) {
-    const after = hero.getBoundingClientRect().bottom;
-    scrollBy({ top: after - before, behavior: 'instant' });
-  }
-});
 
 artwork.forEach((button) => {
   button.addEventListener('pointerenter', (event) => {
@@ -83,15 +64,28 @@ function updateHero() {
 
 function updateScrollArt() {
   scheduled = false;
-  if (!root.classList.contains('motion-on')) return;
+  const gentle = reducedMotion.matches;
   const distance = Math.max(1, root.scrollHeight - innerHeight);
   root.style.setProperty('--page-progress', clamp(scrollY / distance, 0, 1));
-  if (visibleArtwork.has(heroArt)) updateHero();
+  if (!gentle && visibleArtwork.has(heroArt)) updateHero();
+
+  for (const stage of stages) {
+    const bounds = stage.getBoundingClientRect();
+    const progress = clamp((innerHeight - bounds.top) / (innerHeight * .58), 0, 1);
+    const remaining = (1 - progress) ** 1.6;
+    const side = stage.matches('#web, #school') ? 1 : -1;
+    stage.style.setProperty('--entry-z', `${remaining * (gentle ? -28 : -490)}px`);
+    stage.style.setProperty('--entry-y', `${remaining * (gentle ? 8 : 85)}px`);
+    stage.style.setProperty('--entry-pitch', `${remaining * (gentle ? 0 : 48)}deg`);
+    stage.style.setProperty('--entry-yaw', `${remaining * side * (gentle ? 0 : 34)}deg`);
+    stage.style.setProperty('--entry-roll', `${remaining * side * (gentle ? 0 : -7)}deg`);
+  }
+  if (gentle) return;
 
   for (const button of visibleArtwork) {
     const panel = button.closest('.track');
     if (!panel) continue;
-    const bounds = panel.getBoundingClientRect();
+    const bounds = panel.parentElement.getBoundingClientRect();
     const offset = (bounds.top + bounds.height / 2 - innerHeight / 2) / innerHeight;
     const progress = clamp(offset * 1.7, -1, 1);
     const direction = panel.matches('.web, .school') ? 1 : -1;
@@ -113,7 +107,7 @@ function updateScrollArt() {
 }
 
 function scheduleScrollArt() {
-  if (scheduled || !root.classList.contains('motion-on')) return;
+  if (scheduled) return;
   scheduled = true;
   requestAnimationFrame(updateScrollArt);
 }

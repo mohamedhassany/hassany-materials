@@ -10,8 +10,9 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@500;700;800&family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="materials.css?v=motion-controls">
-  <link rel="stylesheet" href="showreel.css?v=motion-controls">
-  <script src="materials.js?v=motion-controls" defer></script>
+  <link rel="stylesheet" href="showreel.css?v=depth-gallery">
+  <link rel="stylesheet" href="depth-gallery.css">
+  <script src="materials.js?v=depth-gallery" defer></script>
 </head>
 <body id="top">
   <a class="skip" href="#materials">روح للماتريل</a>
@@ -26,6 +27,9 @@
     <section class="hero">
       <div class="hero-stage">
         <div class="stage-grid" aria-hidden="true"></div>
+        <div class="pixel-field" aria-hidden="true">
+          <i></i><i></i><i></i><i></i><i></i><i></i>
+        </div>
         <div class="wrap hero-grid">
         <div class="hero-copy">
           <p class="overline">ماتريل محمد حساني</p>
@@ -55,7 +59,7 @@
       <div class="ribbon">
         <a href="#web">الويب</a><a href="#vibe" dir="ltr">Vibe Coding</a><a href="#school">البكالوريا</a><a href="#work">البورتفوليو</a>
       </div>
-      <article class="track web" id="web">
+      <div class="track-stage" id="web"><article class="track web">
         <div class="track-copy">
           <h3>تطوير الويب</h3><p>ابدأ بـ HTML وCSS، واتدرّج في JavaScript لحد ما تبني واجهات بـ React.</p>
           <a class="button outline" href="https://frontend-step.vercel.app/" target="_blank" rel="noopener noreferrer">افتح ماتريل الويب</a>
@@ -64,8 +68,8 @@
           <span class="scene" aria-hidden="true"><span class="frame"><span class="frame-bar">index.html</span><span class="editor-code"><em>&lt;main&gt;</em><br>&nbsp; &lt;h1&gt;Hello, web!&lt;/h1&gt;<br><em>&lt;/main&gt;</em></span><span class="preview">Hello, web!</span></span></span>
           <span class="art-action" dir="auto">Run preview <i>+</i></span>
         </button>
-      </article>
-      <article class="track vibe" id="vibe">
+      </article></div>
+      <div class="track-stage" id="vibe"><article class="track vibe">
         <div class="track-copy">
           <h3>Vibe Coding</h3><p>حوّل فكرتك لمشروع صغير مع أدوات الذكاء الاصطناعي. اتعلّم توصف اللي عايزه، تراجع الناتج وتعدّل عليه.</p>
           <a class="button outline" href="https://vibe-lab-workshop.vercel.app/" target="_blank" rel="noopener noreferrer">افتح الورشة</a>
@@ -74,8 +78,8 @@
           <span class="scene" aria-hidden="true"><span class="frame"><span class="frame-bar">Vibe Lab</span><span class="prompt">Build a landing page</span><span class="output"><i></i><i></i><i></i></span></span></span>
           <span class="art-action" dir="auto">Generate <i>+</i></span>
         </button>
-      </article>
-      <article class="track school" id="school">
+      </article></div>
+      <div class="track-stage" id="school"><article class="track school">
         <div class="track-copy">
           <h3>بكالوريا تانية ثانوي</h3><p>ادخل على ماتريل الصف التاني الثانوي، واستخدمها عشان ترتّب مذاكرتك وترجع للمحتوى وقت المراجعة.</p>
           <a class="button outline" href="https://sec2-baccalaureate.vercel.app/" target="_blank" rel="noopener noreferrer">افتح ماتريل البكالوريا</a>
@@ -84,8 +88,8 @@
           <span class="scene" aria-hidden="true"><span class="book-model"><span class="book-leaf"><b>مراجعة</b><i></i><i></i><i></i></span><span class="book-front"><small>الصف الثاني الثانوي</small><b>بكالوريا</b><span>دفتر المراجعة</span></span></span></span>
           <span class="art-action" dir="auto">افتح الكتاب <i>+</i></span>
         </button>
-      </article>
-      <article class="track work" id="work">
+      </article></div>
+      <div class="track-stage" id="work"><article class="track work">
         <div class="track-copy">
           <h3>البورتفوليو</h3><p>شوف مشاريع محمد حساني في تصميم وتطوير الويب، واتعرّف على الشغل اللي ورا الماتريل.</p>
           <a class="button outline" href="https://my-portfolio-gamma-two-39.vercel.app/" target="_blank" rel="noopener noreferrer">شوف البورتفوليو</a>
@@ -94,7 +98,7 @@
           <span class="scene" aria-hidden="true"><span class="frame"><span class="frame-bar">Mohamed Hassany</span><span class="gallery"><i>Web</i><i>UI</i><i>JS</i></span><strong>Selected work</strong></span></span>
           <span class="art-action" dir="auto">شوف المعرض <i>+</i></span>
         </button>
-      </article>
+      </article></div>
     </section>
   </main>
   <footer id="contact">
@@ -103,6 +107,5 @@
       <div class="footer-contact"><h2>عندك سؤال عن الماتريل؟</h2><div class="footer-links"><a href="https://wa.me/201022841585" target="_blank" rel="noopener noreferrer">كلّمني على واتساب</a><a href="https://github.com/mohamedhassany" target="_blank" rel="noopener noreferrer">GitHub</a><a href="https://www.instagram.com/mo7amed_hassany" target="_blank" rel="noopener noreferrer">Instagram</a></div></div>
     </div>
   </footer>
-  <button class="motion-toggle" type="button" hidden>إيقاف الحركة</button>
 </body>
 </html>

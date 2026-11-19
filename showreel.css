@@ -48,13 +48,7 @@
     rotateX(calc(var(--hero-rx,0deg) + var(--pointer-rx,0deg)))
     rotateY(calc(var(--hero-ry,0deg) + var(--pointer-ry,0deg)));
 }
-.track { position:relative; perspective:1100px; }
 .track-art { overflow:clip; }
-.motion-on .track .track-art {
-  transform:translate3d(var(--track-x,0px),var(--track-y,0px),var(--track-z,0px))
-    rotateX(var(--track-rx,0deg)) rotateY(var(--track-ry,0deg));
-}
-.motion-on .track .track-copy { transform:translate3d(0,var(--track-copy-y,0px),0); }
 .motion-on .track-art .scene {
   transform:translate3d(0,var(--scroll-shift,0px),25px)
     rotateX(var(--pointer-rx,0deg)) rotateY(calc(var(--scroll-tilt,0deg) + var(--pointer-ry,0deg)));
@@ -81,14 +75,6 @@
 .art:is(.is-pressed,.is-preview) .ui-preview .ui-layout i:nth-child(3) { animation-delay:.16s; }
 .art:is(.is-pressed,.is-preview) .preview { transform:translateY(-.42rem) rotateX(14deg) scale(1.05); }
 .art:is(.is-pressed,.is-preview) .gallery i { transform:translateY(-.7rem) rotateY(-29deg); }
-.motion-toggle {
-  position:fixed; z-index:9; inset:auto auto 1rem 1rem; cursor:pointer; min-height:44px;
-  padding:.45rem .8rem; border-radius:99px; border:1px solid #e8d2b580;
-  background:#300d0c; color:#fff4e6; font:inherit; font-size:.8rem; box-shadow:0 3px 16px #300d0c40;
-}
-.motion-paused *, .motion-paused *::before, .motion-paused *::after {
-  animation:none !important; transition:none !important; scroll-behavior:auto !important;
-}
 @keyframes console-showreel {
   0%,100% { transform:rotateX(9deg) rotateY(-12deg) translateZ(12px); }
   50% { transform:rotateX(16deg) rotateY(8deg) translate3d(0,-12px,32px); }
@@ -112,11 +98,9 @@
   }
   .motion-on .track-art .scene { width:78%; }
   .motion-on .scroll-cue { margin:.75rem 0 0; }
-  .motion-toggle { bottom:.6rem; left:.6rem; }
 }
 @media (max-width:720px) and (max-height:790px) {
   .motion-on .hero { height:auto; }
   .motion-on .hero-stage { position:relative; height:auto; }
   .motion-on .hero-grid { min-height:0; }
 }
-.motion-paused .scroll-meter { display:none; }

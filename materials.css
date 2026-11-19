@@ -73,8 +73,6 @@ h1 em { font-style:normal; color:var(--cream); }
   margin-bottom:1.1rem; padding:clamp(1rem,3vw,2.15rem); border:1px solid var(--line); border-radius:18px;
   background:#fffbf5; scroll-margin-top:1rem;
 }
-.track:nth-of-type(even) .track-copy { grid-column:2; grid-row:1; }
-.track:nth-of-type(even) .track-art { grid-column:1; grid-row:1; }
 .track-copy { padding-inline:.4rem; }
 .track h3 { margin-bottom:.65rem; color:var(--wine); font-size:clamp(1.65rem,4vw,3.1rem); line-height:1.35; }
 .track-copy p { max-width:43ch; margin-bottom:1.25rem; color:#62483f; }
@@ -141,7 +139,6 @@ footer { background:#300d0c; color:var(--paper); padding-block:3rem; }
   .hero-grid,.track { grid-template-columns:1fr; }
   .hero-grid { padding-block:3rem 1.5rem; gap:1rem; }
   .hero-art { min-height:270px; }
-  .track:nth-of-type(even) .track-copy,.track:nth-of-type(even) .track-art { grid-area:auto; }
 }
 @media(prefers-reduced-motion:reduce) {
   html:not(.motion-on) { scroll-behavior:auto; }
