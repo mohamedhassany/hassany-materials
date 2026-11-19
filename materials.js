@@ -24,6 +24,7 @@ const firstCard = .19;
 const cardInterval = .157;
 const cardDuration = .31;
 const deckPrelude = .34;
+const furthestProgress = new WeakMap();
 let deckTarget = 0;
 let deckPosition = null;
 let deckFrame = 0;
@@ -57,12 +58,19 @@ artwork.forEach((button) => {
 let scheduled = false;
 const clamp = (value, min, max) => Math.max(min, Math.min(max, value));
 
+// Keep only in-memory progress so a new page load starts a fresh show.
+function rememberProgress(scene, progress) {
+  const furthest = Math.max(furthestProgress.get(scene) ?? -Infinity, progress);
+  furthestProgress.set(scene, furthest);
+  return furthest;
+}
+
 function updateHero() {
   const box = hero.getBoundingClientRect();
   const stickyDistance = box.height - heroStage.offsetHeight;
   const headerHeight = siteHeader.offsetHeight;
   const travel = stickyDistance > 0 ? stickyDistance + headerHeight : Math.min(230, box.height * .32);
-  const progress = clamp((headerHeight - box.top) / travel, 0, 1);
+  const progress = rememberProgress(hero, clamp((headerHeight - box.top) / travel, 0, 1));
   const typing = clamp(progress / .44, 0, 1);
   let letters = Math.ceil(typing * heroLetters.reduce((sum, line) => sum + line.length, 0));
   heroLines.forEach((line, index) => {
@@ -100,7 +108,7 @@ function updateHero() {
 
 function updateSceneFold() {
   const { top, height } = sceneFold.getBoundingClientRect();
-  const progress = clamp((innerHeight * .77 - top - height) / (innerHeight * .57), 0, 1);
+  const progress = rememberProgress(sceneFold, clamp((innerHeight * .77 - top - height) / (innerHeight * .57), 0, 1));
   const angle = progress * progress * (3 - 2 * progress);
   sceneFold.style.setProperty('--fold-angle', `${angle * -90}deg`);
   sceneFold.style.setProperty('--fold-visibility', progress === 1 ? 'hidden' : 'visible');
@@ -116,7 +124,7 @@ function updateScrollArt() {
   updateSceneFold();
   const footerBounds = footer.getBoundingClientRect();
   const footerEntry = clamp((innerHeight - footerBounds.top) / Math.max(1, Math.min(footerBounds.height * .82, innerHeight * .38)), 0, 1);
-  footer.style.setProperty('--footer-entry', footerEntry);
+  footer.style.setProperty('--footer-entry', rememberProgress(footer, footerEntry));
 
   const sticky = getComputedStyle(deck).position === 'sticky';
   const runwayBounds = runway.getBoundingClientRect();
@@ -124,7 +132,7 @@ function updateScrollArt() {
   const stickyTop = sticky ? parseFloat(getComputedStyle(deck).top) : 0;
   const prelude = innerHeight * deckPrelude;
   if (sticky) {
-    deckTarget = clamp((stickyTop + prelude - runwayBounds.top) / (range + prelude), 0, 1);
+    deckTarget = rememberProgress(deck, clamp((stickyTop + prelude - runwayBounds.top) / (range + prelude), 0, 1));
     if (deckPosition === null || reduceMotion.matches) {
       deckPosition = deckTarget;
       paintDeck(deckPosition);
@@ -149,7 +157,7 @@ function updateScrollArt() {
     if (!panel) continue;
     const bounds = panel.parentElement.getBoundingClientRect();
     const offset = (bounds.top + bounds.height / 2 - innerHeight / 2) / innerHeight;
-    const progress = clamp(offset * 1.7, -1, 1);
+    const progress = -rememberProgress(button, -clamp(offset * 1.7, -1, 1));
     const direction = panel.matches('.web, .school') ? 1 : -1;
     panel.style.setProperty('--track-x', `${progress * direction * 24}px`);
     panel.style.setProperty('--track-y', `${progress * 25}px`);
@@ -169,6 +177,7 @@ function updateScrollArt() {
 }
 
 function paintCard(stage, progress, pinned) {
+  progress = rememberProgress(stage, progress);
   const remaining = (1 - progress) ** 2;
   const side = stage.matches('#web, #school') ? 1 : -1;
   stage.style.setProperty('--entry-visibility', clamp(progress * (pinned ? 3.7 : 3), 0, 1));
@@ -183,6 +192,7 @@ function paintCard(stage, progress, pinned) {
 }
 
 function paintDeckTitle(typing) {
+  typing = rememberProgress(typedHeading, typing);
   const text = headingLetters.slice(0, Math.ceil(typing * headingLetters.length)).join('');
   if (typedHeading.textContent !== text) typedHeading.textContent = text;
   const depth = (1 - typing) ** 1.5;
