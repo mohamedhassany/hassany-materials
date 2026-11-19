@@ -1,5 +1,6 @@
 /* The stationary stage provides the scroll bounds and perspective for the whole card. */
 body { overflow-x:clip; }
+:root { --scene-dark:#300d0c; --blend-height:clamp(64px,10vw,138px); }
 .track-stage {
   position:relative;
   margin:0 0 clamp(2rem,6vw,5rem);
@@ -50,6 +51,22 @@ body { overflow-x:clip; }
   background:linear-gradient(#e8d2b515 1px,transparent 1px),linear-gradient(90deg,#e8d2b515 1px,transparent 1px);
   background-size:clamp(27px,4vw,64px) clamp(27px,4vw,64px);
   mask-image:linear-gradient(110deg,#000,transparent 85%);
+}
+.hero-stage::after {
+  content:""; position:absolute; inset:auto 0 0; height:clamp(48px,10vh,105px);
+  pointer-events:none;
+  background:linear-gradient(to bottom,transparent,var(--scene-dark));
+}
+.hero-stage .hero-grid { position:relative; z-index:1; }
+.section-blend {
+  height:var(--blend-height);
+  background:linear-gradient(to bottom,var(--scene-dark),#69362d 28%,#c59d82 70%,var(--paper));
+  background:linear-gradient(to bottom in oklab,var(--scene-dark),#69362d 28%,#c59d82 70%,var(--paper));
+}
+.section-blend + .catalog { padding-block-start:clamp(1.25rem,3.8vw,3.5rem); }
+footer {
+  padding-block-start:calc(2.25rem + var(--blend-height));
+  background:linear-gradient(to bottom,var(--paper) 4px,#c59d82 calc(var(--blend-height) * .42),var(--scene-dark) var(--blend-height));
 }
 .hero-stage .stage-grid {
   inset:42% -56% -65%;
