@@ -82,7 +82,6 @@ function updateHero() {
   hero.style.setProperty('--hero-art-depth', `${(1 - illustration) ** 2 * -290}px`);
   hero.style.setProperty('--hero-art-yaw', `${(1 - illustration) ** 2 * 48}deg`);
   const arc = Math.sin(progress * Math.PI);
-  hero.style.setProperty('--grid-y', `${progress * 100}px`);
   hero.style.setProperty('--copy-y', `${arc * -13}px`);
   heroArt.style.setProperty('--hero-y', `${arc * -16}px`);
   heroArt.style.setProperty('--hero-z', `${arc * 72}px`);
