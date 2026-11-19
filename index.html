@@ -11,8 +11,8 @@
   <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=Manrope:wght@500;700;800&family=Readex+Pro:wght@400;500;600;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="materials.css?v=desktop-motion">
   <link rel="stylesheet" href="showreel.css?v=depth-gallery">
-  <link rel="stylesheet" href="depth-gallery.css?v=desktop-motion">
-  <script src="materials.js?v=desktop-motion" defer></script>
+  <link rel="stylesheet" href="depth-gallery.css?v=scroll-story">
+  <script src="materials.js?v=scroll-story" defer></script>
 </head>
 <body id="top">
   <a class="skip" href="#materials">روح للماتريل</a>
@@ -55,10 +55,13 @@
       </div>
     </section>
     <section class="catalog wrap" id="materials" aria-labelledby="catalog-heading">
-      <div class="section-heading"><h2 id="catalog-heading">اختار مسارك.</h2><p>ابدأ بالكود، جهّز للمراجعة، أو خد لفة في مشاريعي.</p></div>
+      <div class="catalog-runway">
+        <div class="catalog-deck">
+      <div class="section-heading"><h2 id="catalog-heading" aria-label="اختار مسارك.">اختار مسارك.<span class="typed-heading" aria-hidden="true"></span></h2><p>ابدأ بالكود، جهّز للمراجعة، أو خد لفة في مشاريعي.</p></div>
       <div class="ribbon">
         <a href="#web">الويب</a><a href="#vibe" dir="ltr">Vibe Coding</a><a href="#school">البكالوريا</a><a href="#work">البورتفوليو</a>
       </div>
+      <div class="deck-grid">
       <div class="track-stage" id="web"><article class="track web">
         <div class="track-copy">
           <h3>تطوير الويب</h3><p>ابدأ بـ HTML وCSS، واتدرّج في JavaScript لحد ما تبني واجهات بـ React.</p>
@@ -99,6 +102,9 @@
           <span class="art-action" dir="auto">شوف المعرض <i>+</i></span>
         </button>
       </article></div>
+      </div>
+        </div>
+      </div>
     </section>
   </main>
   <footer id="contact">

@@ -7,6 +7,14 @@ const hero = document.querySelector('.hero');
 const heroStage = document.querySelector('.hero-stage');
 const heroArt = document.querySelector('.hero-art');
 const stages = [...document.querySelectorAll('.track-stage')];
+const runway = document.querySelector('.catalog-runway');
+const deck = document.querySelector('.catalog-deck');
+const ribbon = document.querySelector('.ribbon');
+const typedHeading = document.querySelector('.typed-heading');
+const headingLetters = Array.from(typedHeading.parentElement.getAttribute('aria-label'));
+const typingEnd = .25;
+const cardInterval = .17;
+const cardDuration = .23;
 
 artwork.forEach((button) => {
   button.addEventListener('pointerenter', (event) => {
@@ -62,11 +70,31 @@ function updateScrollArt() {
   root.style.setProperty('--page-progress', clamp(scrollY / distance, 0, 1));
   if (visibleArtwork.has(heroArt)) updateHero();
 
-  for (const stage of stages) {
+  const sticky = getComputedStyle(deck).position === 'sticky';
+  const runwayBounds = runway.getBoundingClientRect();
+  const range = Math.max(1, runwayBounds.height - deck.offsetHeight);
+  const stickyTop = sticky ? parseFloat(getComputedStyle(deck).top) : 0;
+  const deckProgress = clamp((stickyTop - runwayBounds.top) / range, 0, 1);
+  if (sticky) {
+    const typingProgress = clamp(deckProgress / typingEnd, 0, 1);
+    const letterCount = Math.floor(typingProgress * headingLetters.length);
+    const text = headingLetters.slice(0, letterCount).join('');
+    if (typedHeading.textContent !== text) typedHeading.textContent = text;
+    const depth = (1 - typingProgress) ** 1.3;
+    typedHeading.style.setProperty('--text-z', `${depth * -180}px`);
+    typedHeading.style.setProperty('--text-pitch', `${depth * 33}deg`);
+    typedHeading.style.setProperty('--text-yaw', `${depth * -24}deg`);
+    deck.classList.toggle('is-typing', deckProgress < typingEnd);
+  }
+
+  for (const [index, stage] of stages.entries()) {
     const bounds = stage.getBoundingClientRect();
-    const progress = clamp((innerHeight - bounds.top) / (innerHeight * .58), 0, 1);
+    const progress = sticky
+      ? clamp((deckProgress - typingEnd - index * cardInterval) / cardDuration, 0, 1)
+      : clamp((innerHeight - bounds.top) / (innerHeight * .58), 0, 1);
     const remaining = (1 - progress) ** 1.6;
     const side = stage.matches('#web, #school') ? 1 : -1;
+    stage.style.setProperty('--entry-visibility', sticky ? progress : 1);
     stage.style.setProperty('--entry-z', `${remaining * -490}px`);
     stage.style.setProperty('--entry-y', `${remaining * 85}px`);
     stage.style.setProperty('--entry-pitch', `${remaining * 48}deg`);
@@ -98,6 +126,16 @@ function updateScrollArt() {
   }
 }
 
+function scrollToDeckCard() {
+  const index = stages.findIndex((stage) => '#' + stage.id === location.hash);
+  if (index < 0 || getComputedStyle(deck).position !== 'sticky') return;
+  const bounds = runway.getBoundingClientRect();
+  const range = bounds.height - deck.offsetHeight;
+  const progress = typingEnd + index * cardInterval + cardDuration;
+  const top = scrollY + bounds.top + Math.ceil(progress * range) - parseFloat(getComputedStyle(deck).top);
+  scrollTo({ top, behavior: 'instant' });
+}
+
 function scheduleScrollArt() {
   if (scheduled) return;
   scheduled = true;
@@ -120,3 +158,9 @@ addEventListener('scroll', scheduleScrollArt, { passive: true });
 addEventListener('resize', scheduleScrollArt);
 root.classList.add('motion-on');
 updateScrollArt();
+addEventListener('hashchange', scrollToDeckCard);
+addEventListener('load', scrollToDeckCard);
+ribbon.addEventListener('click', (event) => {
+  const link = event.target.closest('a');
+  if (link?.hash === location.hash) requestAnimationFrame(scrollToDeckCard);
+});
