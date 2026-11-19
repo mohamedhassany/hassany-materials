@@ -6,6 +6,7 @@ const siteHeader = document.querySelector('.site-header');
 const hero = document.querySelector('.hero');
 const heroStage = document.querySelector('.hero-stage');
 const heroArt = document.querySelector('.hero-art');
+const sceneFold = document.querySelector('.scene-fold');
 const stages = [...document.querySelectorAll('.track-stage')];
 const runway = document.querySelector('.catalog-runway');
 const deck = document.querySelector('.catalog-deck');
@@ -82,6 +83,7 @@ function updateHero() {
   hero.style.setProperty('--hero-art-depth', `${(1 - illustration) ** 2 * -290}px`);
   hero.style.setProperty('--hero-art-yaw', `${(1 - illustration) ** 2 * 48}deg`);
   const arc = Math.sin(progress * Math.PI);
+  hero.style.setProperty('--grid-y', `${progress * 100}px`);
   hero.style.setProperty('--copy-y', `${arc * -13}px`);
   heroArt.style.setProperty('--hero-y', `${arc * -16}px`);
   heroArt.style.setProperty('--hero-z', `${arc * 72}px`);
@@ -95,11 +97,26 @@ function updateHero() {
   heroArt.style.setProperty('--preview-angle', `${18 - progress * 31}deg`);
 }
 
+function updateSceneFold() {
+  const { top, height } = sceneFold.getBoundingClientRect();
+  const progress = clamp((innerHeight * .88 - top) / (innerHeight * .57 + height * .35), 0, 1);
+  const crease = (1 - progress) ** 1.4;
+  const visibility = clamp(progress * 8, 0, 1) * clamp((1 - progress) * 5, 0, 1);
+  sceneFold.style.setProperty('--fold-opacity', visibility);
+  sceneFold.style.setProperty('--fold-angle', `${crease * 69}deg`);
+  sceneFold.style.setProperty('--fold-lift', `${Math.sin(progress * Math.PI) * -28}px`);
+  sceneFold.style.setProperty('--fold-depth', `${crease * -180}px`);
+  sceneFold.style.setProperty('--fold-twist', `${crease * -13}deg`);
+  heroArt.style.setProperty('--fold-exit-depth', `${-progress * 145}px`);
+  heroArt.style.setProperty('--fold-exit-pitch', `${progress * 24}deg`);
+}
+
 function updateScrollArt() {
   scheduled = false;
   const distance = Math.max(1, root.scrollHeight - innerHeight);
   root.style.setProperty('--page-progress', clamp(scrollY / distance, 0, 1));
   updateHero();
+  updateSceneFold();
   const footerBounds = footer.getBoundingClientRect();
   const footerEntry = clamp((innerHeight - footerBounds.top) / Math.max(1, Math.min(footerBounds.height * .82, innerHeight * .38)), 0, 1);
   footer.style.setProperty('--footer-entry', footerEntry);
