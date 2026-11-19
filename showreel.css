@@ -43,11 +43,43 @@
 .scroll-cue i::after { content:""; width:5px; height:5px; background:var(--cream); border-radius:50%; animation:scroll-dot 1.9s ease-in-out infinite; }
 .motion-on .hero-grid { perspective:1100px; }
 .motion-on .hero-copy { transform:translate3d(0,var(--copy-y,0px),0); }
-.motion-on .hero-art .scene {
-  transform:translate3d(0,var(--hero-y,0px),var(--hero-z,0px))
-    rotateX(calc(var(--hero-rx,0deg) + var(--pointer-rx,0deg)))
-    rotateY(calc(var(--hero-ry,0deg) + var(--pointer-ry,0deg)));
+.hero-typed { display:none; }
+.motion-on .hero-copy h1 { position:relative; }
+.motion-on .hero-title-source { visibility:hidden; }
+.motion-on .hero-typed {
+  display:block; position:absolute; inset:0; pointer-events:none;
+  transform-origin:right center;
+  transform:perspective(650px) translateZ(var(--hero-type-depth,-145px))
+    rotateX(var(--hero-type-pitch,24deg)) rotateY(var(--hero-type-yaw,-22deg));
+  text-shadow:0 2px 0 #7f3e2e,0 5px 12px #220a07a8;
 }
+.motion-on .hero-typed.is-typing em::after,.motion-on .hero-typed.is-typing.is-first-line span::after {
+  content:""; display:inline-block; width:2px; height:.78em;
+  margin-inline-start:.1em; background:var(--cream); vertical-align:-.04em;
+}
+.motion-on .hero-typed.is-first-line em::after { display:none; }
+.motion-on .hero-detail {
+  opacity:var(--hero-details,0);
+  transform:perspective(700px) translateY(calc((1 - var(--hero-details,0)) * 18px)) translateZ(calc((1 - var(--hero-details,0)) * -62px));
+}
+.motion-on .hero-copy .button { transition:background .2s,color .2s,box-shadow .2s; }
+.motion-on .hero-detail:focus-visible { opacity:1; transform:none; }
+.motion-on .hero-art { opacity:var(--hero-art-entry,0); }
+.motion-on .is-art-pending .hero-art,.motion-on .is-detail-pending .hero-detail { pointer-events:none; }
+.motion-on .hero-art:focus-visible { opacity:1; }
+.motion-on .hero-art .scene {
+  transform:translate3d(0,var(--hero-y,0px),calc(var(--hero-z,0px) + var(--hero-art-depth,0px)))
+    rotateX(calc(var(--hero-rx,0deg) + var(--pointer-rx,0deg)))
+    rotateY(calc(var(--hero-ry,0deg) + var(--pointer-ry,0deg) + var(--hero-art-yaw,0deg)));
+}
+.motion-on .hero-art:focus-visible .scene { transform:none; }
+.motion-on .footer-inner {
+  --remaining:calc(1 - var(--footer-entry,0));
+  opacity:var(--footer-entry,0);
+  transform:perspective(780px) translateY(calc(var(--remaining) * 24px))
+    translateZ(calc(var(--remaining) * -90px)) rotateX(calc(var(--remaining) * 18deg));
+}
+.motion-on .footer-inner:focus-within { opacity:1; transform:none; }
 .track-art { overflow:clip; }
 .motion-on .track-art .scene {
   transform:translate3d(0,var(--scroll-shift,0px),25px)

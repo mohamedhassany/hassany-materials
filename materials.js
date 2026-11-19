@@ -9,8 +9,12 @@ const heroArt = document.querySelector('.hero-art');
 const stages = [...document.querySelectorAll('.track-stage')];
 const runway = document.querySelector('.catalog-runway');
 const deck = document.querySelector('.catalog-deck');
-const ribbon = document.querySelector('.ribbon');
-const ribbonLinks = [...ribbon.querySelectorAll('a')];
+const footer = document.querySelector('footer');
+const heroTitle = document.querySelector('.hero-typed');
+const heroLines = [...heroTitle.children].filter((line) => line.tagName !== 'BR');
+const heroLetters = [...document.querySelector('.hero-title-source').childNodes]
+  .filter((line) => line.nodeName !== 'BR')
+  .map((line) => [...line.textContent.matchAll(/\P{Mark}\p{Mark}*/gu)].map(([letter]) => letter));
 const typedHeading = document.querySelector('.typed-heading');
 const headingLetters = Array.from(typedHeading.parentElement.getAttribute('aria-label'));
 const reduceMotion = matchMedia('(prefers-reduced-motion: reduce)');
@@ -55,7 +59,28 @@ function updateHero() {
   const box = hero.getBoundingClientRect();
   const stickyDistance = box.height - heroStage.offsetHeight;
   const headerHeight = siteHeader.offsetHeight;
-  const progress = clamp((headerHeight - box.top) / (headerHeight + (stickyDistance > 0 ? stickyDistance : box.height)), 0, 1);
+  const travel = stickyDistance > 0 ? stickyDistance + headerHeight : Math.min(230, box.height * .32);
+  const progress = clamp((headerHeight - box.top) / travel, 0, 1);
+  const typing = clamp(progress / .44, 0, 1);
+  let letters = Math.ceil(typing * heroLetters.reduce((sum, line) => sum + line.length, 0));
+  heroLines.forEach((line, index) => {
+    const text = heroLetters[index].slice(0, Math.max(0, letters)).join('');
+    if (line.textContent !== text) line.textContent = text;
+    letters -= heroLetters[index].length;
+  });
+  heroTitle.classList.toggle('is-typing', typing < 1);
+  heroTitle.classList.toggle('is-first-line', !heroLines[1].textContent);
+  hero.style.setProperty('--hero-type-depth', `${(1 - typing) * -145}px`);
+  hero.style.setProperty('--hero-type-yaw', `${(1 - typing) * -22}deg`);
+  hero.style.setProperty('--hero-type-pitch', `${(1 - typing) * 24}deg`);
+  const detail = clamp((progress - .44) / .33, 0, 1);
+  const illustration = clamp((progress - .57) / .37, 0, 1);
+  hero.style.setProperty('--hero-details', detail);
+  hero.style.setProperty('--hero-art-entry', illustration);
+  hero.classList.toggle('is-art-pending', illustration < .06);
+  hero.classList.toggle('is-detail-pending', detail < .06);
+  hero.style.setProperty('--hero-art-depth', `${(1 - illustration) ** 2 * -290}px`);
+  hero.style.setProperty('--hero-art-yaw', `${(1 - illustration) ** 2 * 48}deg`);
   const arc = Math.sin(progress * Math.PI);
   hero.style.setProperty('--grid-y', `${progress * 100}px`);
   hero.style.setProperty('--copy-y', `${arc * -13}px`);
@@ -75,7 +100,10 @@ function updateScrollArt() {
   scheduled = false;
   const distance = Math.max(1, root.scrollHeight - innerHeight);
   root.style.setProperty('--page-progress', clamp(scrollY / distance, 0, 1));
-  if (visibleArtwork.has(heroArt)) updateHero();
+  updateHero();
+  const footerBounds = footer.getBoundingClientRect();
+  const footerEntry = clamp((innerHeight - footerBounds.top) / Math.max(1, Math.min(footerBounds.height * .82, innerHeight * .38)), 0, 1);
+  footer.style.setProperty('--footer-entry', footerEntry);
 
   const sticky = getComputedStyle(deck).position === 'sticky';
   const runwayBounds = runway.getBoundingClientRect();
@@ -95,6 +123,7 @@ function updateScrollArt() {
     cancelAnimationFrame(deckFrame);
     deckFrame = 0;
     deckPosition = null;
+    paintDeckTitle(clamp((innerHeight * .92 - runwayBounds.top) / (innerHeight * .32), 0, 1));
     for (const stage of stages) {
       const bounds = stage.getBoundingClientRect();
       const progress = clamp((innerHeight - bounds.top) / (innerHeight * .55), 0, 1);
@@ -129,7 +158,7 @@ function updateScrollArt() {
 function paintCard(stage, progress, pinned) {
   const remaining = (1 - progress) ** 2;
   const side = stage.matches('#web, #school') ? 1 : -1;
-  stage.style.setProperty('--entry-visibility', pinned ? clamp(progress * 3.7, 0, 1) : 1);
+  stage.style.setProperty('--entry-visibility', clamp(progress * (pinned ? 3.7 : 3), 0, 1));
   stage.style.setProperty('--entry-z', `${remaining * -300}px`);
   stage.style.setProperty('--entry-x', `${remaining * side * -32}px`);
   stage.style.setProperty('--entry-y', `${remaining * 42}px`);
@@ -137,24 +166,25 @@ function paintCard(stage, progress, pinned) {
   stage.style.setProperty('--entry-yaw', `${remaining * side * 25}deg`);
   stage.style.setProperty('--entry-roll', `${remaining * side * -4}deg`);
   stage.style.setProperty('--entry-shine', Math.sin(progress * Math.PI) * .5);
-  stage.classList.toggle('is-unrevealed', pinned && progress < .06);
+  stage.classList.toggle('is-unrevealed', progress < .06);
 }
 
-function paintDeck(position) {
-  const typing = clamp(position / typingEnd, 0, 1);
+function paintDeckTitle(typing) {
   const text = headingLetters.slice(0, Math.ceil(typing * headingLetters.length)).join('');
   if (typedHeading.textContent !== text) typedHeading.textContent = text;
   const depth = (1 - typing) ** 1.5;
   typedHeading.style.setProperty('--text-z', `${depth * -120}px`);
   typedHeading.style.setProperty('--text-pitch', `${depth * 23}deg`);
   typedHeading.style.setProperty('--text-yaw', `${depth * -13}deg`);
-  deck.style.setProperty('--deck-progress', position);
   deck.classList.toggle('is-typing', typing < 1);
-  const active = position < firstCard ? -1 : Math.min(stages.length - 1, Math.floor((position - firstCard) / cardInterval));
+}
+
+function paintDeck(position) {
+  paintDeckTitle(clamp(position / typingEnd, 0, 1));
+  deck.style.setProperty('--deck-progress', position);
   for (const [index, stage] of stages.entries()) {
     const progress = clamp((position - firstCard - index * cardInterval) / cardDuration, 0, 1);
     paintCard(stage, progress, true);
-    ribbonLinks[index].classList.toggle('is-current', index === active);
   }
 }
 
@@ -206,11 +236,3 @@ root.classList.add('motion-on');
 updateScrollArt();
 addEventListener('hashchange', scrollToDeckCard);
 addEventListener('load', scrollToDeckCard);
-ribbon.addEventListener('click', (event) => {
-  const link = event.target.closest('a');
-  if (!link || event.ctrlKey || event.metaKey || event.shiftKey || event.altKey ||
-      getComputedStyle(deck).position !== 'sticky') return;
-  event.preventDefault();
-  if (link.hash !== location.hash) history.pushState(null, '', link.hash);
-  scrollToDeckCard();
-});
