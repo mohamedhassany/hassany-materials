@@ -3,6 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script>
+    // Start the first scene before the browser restores a saved scroll or anchor.
+    if ('scrollRestoration' in history) history.scrollRestoration = 'manual';
+    if (location.hash) history.replaceState(history.state, '', location.pathname + location.search);
+  </script>
   <meta name="theme-color" content="#590907">
   <meta name="description" content="ماتريل الويب وVibe Coding والبكالوريا والبورتفوليو من محمد حساني.">
   <title>HassAny Materials | محمد حساني</title>
@@ -12,7 +17,7 @@
   <link rel="stylesheet" href="materials.css?v=scene-fold">
   <link rel="stylesheet" href="showreel.css?v=scene-fold">
   <link rel="stylesheet" href="depth-gallery.css?v=hinged-edge">
-  <script src="materials.js?v=play-once" defer></script>
+  <script src="materials.js?v=start-at-top" defer></script>
 </head>
 <body id="top">
   <a class="skip" href="#materials">روح للماتريل</a>

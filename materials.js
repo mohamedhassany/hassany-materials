@@ -256,6 +256,6 @@ if ('IntersectionObserver' in window) {
 addEventListener('scroll', scheduleScrollArt, { passive: true });
 addEventListener('resize', scheduleScrollArt);
 root.classList.add('motion-on');
+scrollTo({ top: 0, left: 0, behavior: 'instant' });
 updateScrollArt();
 addEventListener('hashchange', scrollToDeckCard);
-addEventListener('load', scrollToDeckCard);
